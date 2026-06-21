@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAMELEONS VS HUNTERS - Головне Меню</title>
+    <style>
+        /* Базові налаштування фону та шрифту */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e; /* Темний фон */
+            background-image: radial-gradient(circle at center, #2a2a4e 0%, #1a1a2e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(90deg, #ff007f, #00f0ff, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px;
+        }
+
+        /* --- ГОЛОВНЕ МЕНЮ --- */
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 300px;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-btn {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 2px solid #00ff00;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .menu-btn:hover {
+            background-color: #00ff00;
+            color: #000;
+            box-shadow: 0 6px 20px rgba(0, 255, 0, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* --- МЕНЮ СТВОРЕННЯ СЕРВЕРА --- */
+        #create-server-menu,
+        #find-server-menu,
+        #settings-menu {
+            display: none; /* Приховано за замовчуванням */
+            width: 80%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00f0ff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #find-server-menu {
+            width: 90%;
+            max-width: 1120px;
+        }
+
+        #settings-menu {
+            max-width: 620px;
+        }
+
+        .form-layout {
+            display: flex;
+            gap: 40px;
+        }
+
+        .search-layout {
+            display: grid;
+            grid-template-columns: minmax(230px, 0.9fr) minmax(320px, 1.35fr) minmax(260px, 1fr);
+            gap: 28px;
+        }
+
+        .search-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-left, .form-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .input-group input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .server-type-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+            padding: 5px;
+        }
+
+        .mode-btn {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            color: #ddd;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 9px 10px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: #00ff00;
+            border-color: #00ff00;
+            color: #000;
+            box-shadow: 0 0 12px rgba(0, 255, 0, 0.45);
+        }
+
+        .private-only.hidden {
+            display: none;
+        }
+
+        /* Секція тегів */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #777;
+            border-radius: 15px;
+            color: #ddd;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-btn:hover, .tag-btn.active {
+            background: #00ff00;
+            color: #000;
+            border-color: #00ff00;
+        }
+
+        .search-results {
+            min-height: 280px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(0, 255, 0, 0.28);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .search-results h2 {
+            font-size: 1.1rem;
+            margin: 0 0 14px;
+            color: #f4f4f4;
+            letter-spacing: 0;
+        }
+
+        .results-list {
+            min-height: 220px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
+
+        .empty-results {
+            color: rgba(255, 255, 255, 0.62);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Кнопки внизу форми */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 2px solid #00f0ff;
+            border-radius: 25px;
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #00f0ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+        }
+
+        .confirm-btn {
+            border-color: #00ff00;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .confirm-btn:hover {
+            background-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+        }
+
+        /* --- ПАНЕЛЬ МОВИ В НАЛАШТУВАННЯХ --- */
+        .settings-title {
+            font-size: 1.6rem;
+            margin: 0;
+            text-align: center;
+            color: #fff;
+            letter-spacing: 0;
+        }
+
+        .settings-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .settings-section label {
+            color: #ccc;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .language-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 100%;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid #00ff00;
+            border-radius: 12px;
+            color: #ccc;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            color: white;
+            border-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .lang-btn.active {
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        @media (max-width: 900px) {
+            body {
+                height: auto;
+                min-height: 100vh;
+                overflow: auto;
+                padding: 28px 0;
+            }
+
+            h1 {
+                font-size: 2.35rem;
+            }
+
+            .form-layout,
+            .search-layout {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+
+            .language-bar {
+                margin-top: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="game-title">CHAMELEONS VS HUNTERS</h1>
+
+    <div id="main-menu" class="menu-container">
+        <button id="btn-create" class="menu-btn" onclick="openCreateMenu()">Створити сервер</button>
+        <button id="btn-find" class="menu-btn" onclick="openFindMenu()">Знайти сервер</button>
+        <button id="btn-settings" class="menu-btn" onclick="openSettingsMenu()">Налаштування</button>
+        <button id="btn-exit" class="menu-btn">Вийти з гри</button>
+    </div>
+
+    <div id="create-server-menu">
+        <div class="form-layout">
+            <div class="form-left">
+                <div class="input-group">
+                    <label id="lbl-player-name">Введіть ім'я, яке буде відображатися в грі</label>
+                    <input type="text" id="input-player-name" placeholder="SKUNS1K" maxlength="30">
+                </div>
+                <div class="input-group">
+                    <label id="lbl-server-name">Введіть ім'я сервера</label>
+                    <input type="text" id="input-server-name" placeholder="Введіть текст" maxlength="25">
+                </div>
+                <div class="input-group">
+                    <label id="lbl-password">Введіть пароль (тільки приватні сервери)</label>
+                    <input type="password" id="input-password" placeholder="Введіть текст" maxlength="25">
+                </div>
+                <div class="input-group">
+                    <label id="lbl-max-players">Максимум гравців (1-24)</label>
+                    <input type="number" id="input-max-players" value="10" min="1" max="24">
+                </div>
+            </div>
+
+            <div class="form-right">
+                <div class="input-group">
+                    <label id="lbl-region-tag">Регіональний тег</label>
+                    <div class="tags-container">
+                        <button class="tag-btn active" onclick="toggleTag(this)">Європа</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Азія</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Північна Америка</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Не вказано</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label id="lbl-server-tag">Тег сервера</label>
+                    <div class="tags-container">
+                        <button class="tag-btn" onclick="toggleTag(this)">Для задоволення</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Всі вітаються</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Тільки майстри маскування</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Новачки</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-confirm-create" class="action-btn confirm-btn">Створити сервер</button>
+
+        <div class="form-actions">
+            <button id="btn-back" class="action-btn" onclick="closeCreateMenu()">Назад</button>
+        </div>
+    </div>
+
+    <div id="find-server-menu">
+        <div class="search-layout">
+            <div class="search-column">
+                <div class="input-group">
+                    <label id="lbl-find-player-name">Введіть ім'я, яке буде відображатися в грі</label>
+                    <input type="text" id="input-find-player-name" placeholder="SKUNS1K" maxlength="30">
+                </div>
+                <div id="find-server-name-field" class="input-group private-only hidden">
+                    <label id="lbl-find-server-name">Введіть ім'я сервера</label>
+                    <input type="text" id="input-find-server-name" placeholder="Введіть текст" maxlength="25">
+                </div>
+                <div id="find-password-field" class="input-group private-only hidden">
+                    <label id="lbl-find-password">Введіть пароль</label>
+                    <input type="password" id="input-find-password" placeholder="Введіть текст" maxlength="25">
+                </div>
+                <div class="input-group">
+                    <label id="lbl-server-type">Тип сервера</label>
+                    <div class="server-type-toggle" role="group" aria-label="Тип сервера">
+                        <button id="btn-private-server" type="button" class="mode-btn" aria-pressed="false" onclick="setFindServerType('private')">Приватний</button>
+                        <button id="btn-public-server" type="button" class="mode-btn active" aria-pressed="true" onclick="setFindServerType('public')">Публічний</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-column">
+                <div class="input-group">
+                    <label id="lbl-find-region-tag">Регіональний тег</label>
+                    <div class="tags-container">
+                        <button class="tag-btn active" onclick="toggleTag(this)">Європа</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Азія</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Африка</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Океанія</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Північна Америка</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Південна Америка</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Не вказано</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label id="lbl-find-server-tag">Тег сервера</label>
+                    <div class="tags-container">
+                        <button class="tag-btn" onclick="toggleTag(this)">Україна</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">США</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Канада</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Німеччина</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Франція</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Польща</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Туреччина</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Японія</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Корея</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Китай</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Для задоволення</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Всі вітаються</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Тільки майстри маскування</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">В основному базовий режим</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">В основному режим зараження</button>
+                        <button class="tag-btn" onclick="toggleTag(this)">Новачки вітаються</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-results">
+                <h2 id="lbl-search-results">Результати пошуку</h2>
+                <div id="search-results-list" class="results-list">
+                    <div id="empty-results" class="empty-results">Сервери не знайдено</div>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-confirm-find" class="action-btn confirm-btn">Знайти публічний сервер</button>
+
+        <div class="form-actions">
+            <button id="btn-find-back" class="action-btn" onclick="closeFindMenu()">Назад</button>
+        </div>
+    </div>
+
+    <div id="settings-menu">
+        <h2 id="settings-title" class="settings-title">Налаштування</h2>
+
+        <div class="settings-section">
+            <label id="lbl-language">Мова</label>
+            <div class="language-bar">
+                <button class="lang-btn" onclick="setLanguage('en', this)">English</button>
+                <button class="lang-btn active" onclick="setLanguage('uk', this)">Українська</button>
+                <button class="lang-btn" onclick="setLanguage('ja', this)">日本語</button>
+                <button class="lang-btn" onclick="setLanguage('es', this)">Español</button>
+                <button class="lang-btn" onclick="setLanguage('de', this)">Deutsch</button>
+                <button class="lang-btn" onclick="setLanguage('fr', this)">Français</button>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button id="btn-settings-back" class="action-btn" onclick="closeSettingsMenu()">Назад</button>
+        </div>
+    </div>
+
+    <script>
+        // Словник з перекладами для обох меню
+        const translations = {
+            'uk': {
+                create: "Створити сервер", find: "Знайти сервер", settings: "Налаштування", exit: "Вийти з гри",
+                playerName: "Введіть ім'я, яке буде відображатися в грі", serverName: "Введіть ім'я сервера",
+                password: "Введіть пароль (тільки приватні сервери)", maxPlayers: "Максимум гравців (1-24)",
+                regionTag: "Регіональний тег", serverTag: "Тег сервера",
+                placeholderText: "Введіть текст", back: "Назад", confirmCreate: "Створити сервер",
+                serverType: "Тип сервера", privateServer: "Приватний", publicServer: "Публічний",
+                searchResults: "Результати пошуку", confirmFindPrivate: "Знайти приватний сервер",
+                confirmFindPublic: "Знайти публічний сервер", noResults: "Сервери не знайдено",
+                language: "Мова"
+            },
+            'en': {
+                create: "Create Server", find: "Find Server", settings: "Settings", exit: "Exit Game",
+                playerName: "Enter the name to be displayed in game", serverName: "Enter server name",
+                password: "Enter password (private servers only)", maxPlayers: "Max players (1-24)",
+                regionTag: "Regional Tag", serverTag: "Server Tag",
+                placeholderText: "Enter text", back: "Back", confirmCreate: "Create Server",
+                serverType: "Server type", privateServer: "Private", publicServer: "Public",
+                searchResults: "Search results", confirmFindPrivate: "Find private server",
+                confirmFindPublic: "Find public server", noResults: "No servers found",
+                language: "Language"
+            },
+            'ja': {
+                create: "サーバー作成", find: "サーバー検索", settings: "設定", exit: "ゲーム終了",
+                playerName: "ゲーム内に表示される名前を入力", serverName: "サーバー名を入力",
+                password: "パスワードを入力 (プライベートのみ)", maxPlayers: "最大プレイヤー数 (1-24)",
+                regionTag: "地域タグ", serverTag: "サーバータグ",
+                placeholderText: "テキストを入力", back: "戻る", confirmCreate: "サーバーを作成",
+                serverType: "サーバータイプ", privateServer: "プライベート", publicServer: "公開",
+                searchResults: "検索結果", confirmFindPrivate: "プライベートサーバーを検索",
+                confirmFindPublic: "公開サーバーを検索", noResults: "サーバーが見つかりません",
+                language: "言語"
+            },
+            'es': {
+                create: "Crear Servidor", find: "Buscar Servidor", settings: "Ajustes", exit: "Salir",
+                playerName: "Introduce el nombre a mostrar en el juego", serverName: "Introduce el nombre del servidor",
+                password: "Introduce la contraseña (solo privados)", maxPlayers: "Máx. jugadores (1-24)",
+                regionTag: "Etiqueta de región", serverTag: "Etiqueta de servidor",
+                placeholderText: "Introduce texto", back: "Atrás", confirmCreate: "Crear Servidor",
+                serverType: "Tipo de servidor", privateServer: "Privado", publicServer: "Público",
+                searchResults: "Resultados de búsqueda", confirmFindPrivate: "Buscar servidor privado",
+                confirmFindPublic: "Buscar servidor público", noResults: "No se encontraron servidores",
+                language: "Idioma"
+            },
+            'de': {
+                create: "Server erstellen", find: "Server finden", settings: "Einstellungen", exit: "Verlassen",
+                playerName: "Geben Sie den Namen ein, der im Spiel angezeigt wird", serverName: "Servername eingeben",
+                password: "Passwort eingeben (nur private Server)", maxPlayers: "Max. Spieler (1-24)",
+                regionTag: "Region-Tag", serverTag: "Server-Tag",
+                placeholderText: "Text eingeben", back: "Zurück", confirmCreate: "Server erstellen",
+                serverType: "Servertyp", privateServer: "Privat", publicServer: "Öffentlich",
+                searchResults: "Suchergebnisse", confirmFindPrivate: "Privaten Server finden",
+                confirmFindPublic: "Öffentlichen Server finden", noResults: "Keine Server gefunden",
+                language: "Sprache"
+            },
+            'fr': {
+                create: "Créer un Serveur", find: "Trouver un Serveur", settings: "Paramètres", exit: "Quitter",
+                playerName: "Entrez le nom à afficher dans le jeu", serverName: "Entrez le nom du serveur",
+                password: "Entrez le mot de passe (privé uniquement)", maxPlayers: "Max joueurs (1-24)",
+                regionTag: "Balise de région", serverTag: "Balise de serveur",
+                placeholderText: "Entrez le texte", back: "Retour", confirmCreate: "Créer un Serveur",
+                serverType: "Type de serveur", privateServer: "Privé", publicServer: "Public",
+                searchResults: "Résultats de recherche", confirmFindPrivate: "Trouver un serveur privé",
+                confirmFindPublic: "Trouver un serveur public", noResults: "Aucun serveur trouvé",
+                language: "Langue"
+            }
+        };
+
+        let currentLanguage = 'uk';
+        let findServerType = 'public';
+
+        // Функція зміни мови
+        function setLanguage(langCode, clickedButton) {
+            currentLanguage = langCode;
+
+            // Головне меню
+            document.getElementById('btn-create').innerText = translations[langCode].create;
+            document.getElementById('btn-find').innerText = translations[langCode].find;
+            document.getElementById('btn-settings').innerText = translations[langCode].settings;
+            document.getElementById('btn-exit').innerText = translations[langCode].exit;
+
+            // Меню створення сервера
+            document.getElementById('lbl-player-name').innerText = translations[langCode].playerName;
+            document.getElementById('lbl-server-name').innerText = translations[langCode].serverName;
+            document.getElementById('lbl-password').innerText = translations[langCode].password;
+            document.getElementById('lbl-max-players').innerText = translations[langCode].maxPlayers;
+            document.getElementById('lbl-region-tag').innerText = translations[langCode].regionTag;
+            document.getElementById('lbl-server-tag').innerText = translations[langCode].serverTag;
+
+            document.getElementById('input-server-name').placeholder = translations[langCode].placeholderText;
+            document.getElementById('input-password').placeholder = translations[langCode].placeholderText;
+
+            document.getElementById('btn-back').innerText = translations[langCode].back;
+            document.getElementById('btn-confirm-create').innerText = translations[langCode].confirmCreate;
+
+            // Меню пошуку сервера
+            document.getElementById('lbl-find-player-name').innerText = translations[langCode].playerName;
+            document.getElementById('lbl-find-server-name').innerText = translations[langCode].serverName;
+            document.getElementById('lbl-find-password').innerText = translations[langCode].password;
+            document.getElementById('lbl-find-region-tag').innerText = translations[langCode].regionTag;
+            document.getElementById('lbl-find-server-tag').innerText = translations[langCode].serverTag;
+            document.getElementById('lbl-server-type').innerText = translations[langCode].serverType;
+            document.getElementById('btn-private-server').innerText = translations[langCode].privateServer;
+            document.getElementById('btn-public-server').innerText = translations[langCode].publicServer;
+            document.getElementById('lbl-search-results').innerText = translations[langCode].searchResults;
+            document.getElementById('empty-results').innerText = translations[langCode].noResults;
+            document.getElementById('input-find-server-name').placeholder = translations[langCode].placeholderText;
+            document.getElementById('input-find-password').placeholder = translations[langCode].placeholderText;
+            document.getElementById('btn-find-back').innerText = translations[langCode].back;
+            updateFindServerMode();
+
+            // Меню налаштувань
+            document.getElementById('settings-title').innerText = translations[langCode].settings;
+            document.getElementById('lbl-language').innerText = translations[langCode].language;
+            document.getElementById('btn-settings-back').innerText = translations[langCode].back;
+
+            // Оновлення активної кнопки мови
+            const langButtons = document.querySelectorAll('.lang-btn');
+            langButtons.forEach(btn => btn.classList.remove('active'));
+            clickedButton.classList.add('active');
+        }
+
+        // Відкрити меню створення сервера
+        function openCreateMenu() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('find-server-menu').style.display = 'none';
+            document.getElementById('settings-menu').style.display = 'none';
+            document.getElementById('create-server-menu').style.display = 'flex';
+        }
+
+        // Повернутися до головного меню
+        function closeCreateMenu() {
+            document.getElementById('create-server-menu').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'flex';
+        }
+
+        // Відкрити меню пошуку сервера
+        function openFindMenu() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('create-server-menu').style.display = 'none';
+            document.getElementById('settings-menu').style.display = 'none';
+            document.getElementById('find-server-menu').style.display = 'flex';
+            updateFindServerMode();
+        }
+
+        // Повернутися до головного меню з пошуку сервера
+        function closeFindMenu() {
+            document.getElementById('find-server-menu').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'flex';
+        }
+
+        // Відкрити меню налаштувань
+        function openSettingsMenu() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('create-server-menu').style.display = 'none';
+            document.getElementById('find-server-menu').style.display = 'none';
+            document.getElementById('settings-menu').style.display = 'flex';
+        }
+
+        // Повернутися до головного меню з налаштувань
+        function closeSettingsMenu() {
+            document.getElementById('settings-menu').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'flex';
+        }
+
+        function setFindServerType(type) {
+            findServerType = type;
+            updateFindServerMode();
+        }
+
+        function updateFindServerMode() {
+            const isPrivate = findServerType === 'private';
+            const texts = translations[currentLanguage];
+            const privateButton = document.getElementById('btn-private-server');
+            const publicButton = document.getElementById('btn-public-server');
+
+            document.getElementById('find-server-name-field').classList.toggle('hidden', !isPrivate);
+            document.getElementById('find-password-field').classList.toggle('hidden', !isPrivate);
+            document.getElementById('btn-confirm-find').innerText = isPrivate ? texts.confirmFindPrivate : texts.confirmFindPublic;
+
+            privateButton.classList.toggle('active', isPrivate);
+            publicButton.classList.toggle('active', !isPrivate);
+            privateButton.setAttribute('aria-pressed', isPrivate);
+            publicButton.setAttribute('aria-pressed', !isPrivate);
+        }
+
+        // Простий перемикач для кнопок-тегів (візуальний ефект)
+        function toggleTag(button) {
+            // Шукаємо всі кнопки в тому ж контейнері і знімаємо 'active'
+            const container = button.parentElement;
+            const buttons = container.querySelectorAll('.tag-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            // Робимо активною ту, на яку натиснули
+            button.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
