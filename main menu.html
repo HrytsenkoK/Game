@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHAMELEONS VS HUNTERS - Головне Меню</title>
     <style>
-        /* Базові налаштування фону та шрифту */
         html {
             --panel-alpha: 0.7;
             font-size: 16px;
@@ -14,7 +13,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #1a1a2e; /* Темний фон */
+            background-color: #1a1a2e;
             background-image: radial-gradient(circle at center, #2a2a4e 0%, #1a1a2e 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -37,7 +36,6 @@
             letter-spacing: 2px;
         }
 
-        /* --- ГОЛОВНЕ МЕНЮ --- */
         .menu-container {
             display: flex;
             flex-direction: column;
@@ -67,11 +65,10 @@
             transform: scale(1.05);
         }
 
-        /* --- МЕНЮ СТВОРЕННЯ СЕРВЕРА --- */
         #create-server-menu,
         #find-server-menu,
         #settings-menu {
-            display: none; /* Приховано за замовчуванням */
+            display: none;
             width: 80%;
             max-width: 900px;
             background: rgba(0, 0, 0, var(--panel-alpha, 0.7));
@@ -88,11 +85,16 @@
             max-width: 1120px;
         }
 
+        /* ВИПРАВЛЕННЯ: settings-menu тепер використовує flex з обмеженням висоти,
+           а overflow застосовується лише до внутрішнього контенту */
         #settings-menu {
             width: 90%;
             max-width: 1180px;
-            max-height: 86vh;
-            overflow: hidden;
+            max-height: 92vh;
+            overflow: visible;
+            box-sizing: border-box;
+            display: none;
+            flex-direction: column;
         }
 
         .form-layout {
@@ -179,7 +181,6 @@
             display: none;
         }
 
-        /* Секція тегів */
         .tags-container {
             display: flex;
             flex-wrap: wrap;
@@ -234,12 +235,11 @@
             text-align: center;
         }
 
-        /* Кнопки внизу форми */
         .form-actions {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-top: 20px;
+            flex-shrink: 0;
         }
 
         .action-btn {
@@ -270,20 +270,23 @@
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
         }
 
-        /* --- ПАНЕЛЬ НАЛАШТУВАНЬ --- */
         .settings-title {
             font-size: 1.6rem;
             margin: 0;
             text-align: center;
             color: #fff;
             letter-spacing: 0;
+            flex-shrink: 0;
         }
 
         .settings-layout {
             display: grid;
             grid-template-columns: 260px minmax(0, 1fr);
             gap: 24px;
-            min-height: 480px;
+            /* ВИПРАВЛЕННЯ: flex-grow щоб займало доступний простір,
+               але не виходило за межі батьківського flex-контейнера */
+            flex: 1 1 auto;
+            min-height: 0;
             overflow: hidden;
         }
 
@@ -291,6 +294,7 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+            overflow-y: auto;
         }
 
         .settings-nav-btn {
@@ -306,6 +310,7 @@
             padding: 10px 14px;
             text-align: center;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
         .settings-nav-btn:hover,
@@ -327,9 +332,11 @@
             display: none;
             grid-template-columns: repeat(2, minmax(240px, 1fr));
             gap: 18px;
-            max-height: 480px;
+            height: 100%;
+            max-height: 100%;
             overflow-y: auto;
             padding: 22px;
+            box-sizing: border-box;
         }
 
         .settings-panel.active {
@@ -1008,19 +1015,18 @@
         <div class="form-actions">
             <button id="btn-reset-settings" class="action-btn reset-btn" onclick="resetSettings()">Скинути</button>
             <div id="settings-status" class="settings-status">Налаштування збережено</div>
-            <button id="btn-settings-back" class="action-btn" onclick="closeSettingsMenu()">Повернутися в меню</button>
+            <button id="btn-settings-back" class="action-btn" onclick="closeSettingsMenu()">Назад</button>
         </div>
     </div>
 
     <script>
-        // Словник з перекладами для обох меню
         const translations = {
             'uk': {
                 create: "Створити сервер", find: "Знайти сервер", settings: "Налаштування", exit: "Вийти з гри",
                 playerName: "Введіть ім'я, яке буде відображатися в грі", serverName: "Введіть ім'я сервера",
                 password: "Введіть пароль (тільки приватні сервери)", maxPlayers: "Максимум гравців (1-24)",
                 regionTag: "Регіональний тег", serverTag: "Тег сервера",
-                placeholderText: "Введіть текст", back: "Повернутися в меню", confirmCreate: "Створити сервер",
+                placeholderText: "Введіть текст", back: "Назад", confirmCreate: "Створити сервер",
                 serverType: "Тип сервера", privateServer: "Приватний", publicServer: "Публічний",
                 searchResults: "Результати пошуку", confirmFindPrivate: "Знайти приватний сервер",
                 confirmFindPublic: "Знайти публічний сервер", noResults: "Сервери не знайдено",
@@ -1031,7 +1037,7 @@
                 playerName: "Enter the name to be displayed in game", serverName: "Enter server name",
                 password: "Enter password (private servers only)", maxPlayers: "Max players (1-24)",
                 regionTag: "Regional Tag", serverTag: "Server Tag",
-                placeholderText: "Enter text", back: "Back to menu", confirmCreate: "Create Server",
+                placeholderText: "Enter text", back: "Back", confirmCreate: "Create Server",
                 serverType: "Server type", privateServer: "Private", publicServer: "Public",
                 searchResults: "Search results", confirmFindPrivate: "Find private server",
                 confirmFindPublic: "Find public server", noResults: "No servers found",
@@ -1042,7 +1048,7 @@
                 playerName: "ゲーム内に表示される名前を入力", serverName: "サーバー名を入力",
                 password: "パスワードを入力 (プライベートのみ)", maxPlayers: "最大プレイヤー数 (1-24)",
                 regionTag: "地域タグ", serverTag: "サーバータグ",
-                placeholderText: "テキストを入力", back: "メニューに戻る", confirmCreate: "サーバーを作成",
+                placeholderText: "テキストを入力", back: "戻る", confirmCreate: "サーバーを作成",
                 serverType: "サーバータイプ", privateServer: "プライベート", publicServer: "公開",
                 searchResults: "検索結果", confirmFindPrivate: "プライベートサーバーを検索",
                 confirmFindPublic: "公開サーバーを検索", noResults: "サーバーが見つかりません",
@@ -1053,7 +1059,7 @@
                 playerName: "Introduce el nombre a mostrar en el juego", serverName: "Introduce el nombre del servidor",
                 password: "Introduce la contraseña (solo privados)", maxPlayers: "Máx. jugadores (1-24)",
                 regionTag: "Etiqueta de región", serverTag: "Etiqueta de servidor",
-                placeholderText: "Introduce texto", back: "Volver al menú", confirmCreate: "Crear Servidor",
+                placeholderText: "Introduce texto", back: "Atrás", confirmCreate: "Crear Servidor",
                 serverType: "Tipo de servidor", privateServer: "Privado", publicServer: "Público",
                 searchResults: "Resultados de búsqueda", confirmFindPrivate: "Buscar servidor privado",
                 confirmFindPublic: "Buscar servidor público", noResults: "No se encontraron servidores",
@@ -1064,7 +1070,7 @@
                 playerName: "Geben Sie den Namen ein, der im Spiel angezeigt wird", serverName: "Servername eingeben",
                 password: "Passwort eingeben (nur private Server)", maxPlayers: "Max. Spieler (1-24)",
                 regionTag: "Region-Tag", serverTag: "Server-Tag",
-                placeholderText: "Text eingeben", back: "Zurück zum Menü", confirmCreate: "Server erstellen",
+                placeholderText: "Text eingeben", back: "Zurück", confirmCreate: "Server erstellen",
                 serverType: "Servertyp", privateServer: "Privat", publicServer: "Öffentlich",
                 searchResults: "Suchergebnisse", confirmFindPrivate: "Privaten Server finden",
                 confirmFindPublic: "Öffentlichen Server finden", noResults: "Keine Server gefunden",
@@ -1075,7 +1081,7 @@
                 playerName: "Entrez le nom à afficher dans le jeu", serverName: "Entrez le nom du serveur",
                 password: "Entrez le mot de passe (privé uniquement)", maxPlayers: "Max joueurs (1-24)",
                 regionTag: "Balise de région", serverTag: "Balise de serveur",
-                placeholderText: "Entrez le texte", back: "Retour au menu", confirmCreate: "Créer un Serveur",
+                placeholderText: "Entrez le texte", back: "Retour", confirmCreate: "Créer un Serveur",
                 serverType: "Type de serveur", privateServer: "Privé", publicServer: "Public",
                 searchResults: "Résultats de recherche", confirmFindPrivate: "Trouver un serveur privé",
                 confirmFindPublic: "Trouver un serveur public", noResults: "Aucun serveur trouvé",
@@ -1194,19 +1200,16 @@
             }
         }
 
-        // Функція зміни мови
         function setLanguage(langCode, clickedButton) {
             const texts = translations[langCode] || translations.uk;
             currentLanguage = translations[langCode] ? langCode : 'uk';
             appSettings.language = currentLanguage;
 
-            // Головне меню
             setText('btn-create', texts.create);
             setText('btn-find', texts.find);
             setText('btn-settings', texts.settings);
             setText('btn-exit', texts.exit);
 
-            // Меню створення сервера
             setText('lbl-player-name', texts.playerName);
             setText('lbl-server-name', texts.serverName);
             setText('lbl-password', texts.password);
@@ -1218,7 +1221,6 @@
             setText('btn-back', texts.back);
             setText('btn-confirm-create', texts.confirmCreate);
 
-            // Меню пошуку сервера
             setText('lbl-find-player-name', texts.playerName);
             setText('lbl-find-server-name', texts.serverName);
             setText('lbl-find-password', texts.password);
@@ -1234,7 +1236,6 @@
             setText('btn-find-back', texts.back);
             updateFindServerMode();
 
-            // Меню налаштувань
             setText('settings-title', texts.settings);
             setText('lbl-language', texts.language);
             setText('btn-settings-back', texts.back);
@@ -1498,9 +1499,7 @@
                 const devices = await navigator.mediaDevices.enumerateDevices();
                 fillDeviceSelect('setting-voice-input', 'voiceInput', devices, 'audioinput', 'Системний мікрофон');
                 fillDeviceSelect('setting-voice-output', 'voiceOutput', devices, 'audiooutput', 'Системні динаміки');
-            } catch (error) {
-                // Браузер може не віддати список пристроїв без дозволу.
-            }
+            } catch (error) {}
         }
 
         function fillDeviceSelect(selectId, settingKey, devices, kind, defaultLabel) {
@@ -1524,7 +1523,6 @@
             select.value = hasCurrentValue ? currentValue : 'default';
         }
 
-        // Відкрити меню створення сервера
         function openCreateMenu() {
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('find-server-menu').style.display = 'none';
@@ -1532,13 +1530,11 @@
             document.getElementById('create-server-menu').style.display = 'flex';
         }
 
-        // Повернутися до головного меню
         function closeCreateMenu() {
             document.getElementById('create-server-menu').style.display = 'none';
             document.getElementById('main-menu').style.display = 'flex';
         }
 
-        // Відкрити меню пошуку сервера
         function openFindMenu() {
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('create-server-menu').style.display = 'none';
@@ -1547,13 +1543,11 @@
             updateFindServerMode();
         }
 
-        // Повернутися до головного меню з пошуку сервера
         function closeFindMenu() {
             document.getElementById('find-server-menu').style.display = 'none';
             document.getElementById('main-menu').style.display = 'flex';
         }
 
-        // Відкрити меню налаштувань
         function openSettingsMenu() {
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('create-server-menu').style.display = 'none';
@@ -1563,7 +1557,6 @@
             applySettingsToPage();
         }
 
-        // Повернутися до головного меню з налаштувань
         function closeSettingsMenu() {
             document.getElementById('settings-menu').style.display = 'none';
             document.getElementById('main-menu').style.display = 'flex';
@@ -1590,13 +1583,10 @@
             publicButton.setAttribute('aria-pressed', !isPrivate);
         }
 
-        // Простий перемикач для кнопок-тегів (візуальний ефект)
         function toggleTag(button) {
-            // Шукаємо всі кнопки в тому ж контейнері і знімаємо 'active'
             const container = button.parentElement;
             const buttons = container.querySelectorAll('.tag-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            // Робимо активною ту, на яку натиснули
             button.classList.add('active');
         }
 
