@@ -6,6 +6,11 @@
     <title>CHAMELEONS VS HUNTERS - Головне Меню</title>
     <style>
         /* Базові налаштування фону та шрифту */
+        html {
+            --panel-alpha: 0.7;
+            font-size: 16px;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -69,7 +74,7 @@
             display: none; /* Приховано за замовчуванням */
             width: 80%;
             max-width: 900px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, var(--panel-alpha, 0.7));
             border: 2px solid #00f0ff;
             border-radius: 20px;
             padding: 30px;
@@ -84,7 +89,10 @@
         }
 
         #settings-menu {
-            max-width: 620px;
+            width: 90%;
+            max-width: 1180px;
+            max-height: 86vh;
+            overflow: hidden;
         }
 
         .form-layout {
@@ -261,7 +269,7 @@
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
         }
 
-        /* --- ПАНЕЛЬ МОВИ В НАЛАШТУВАННЯХ --- */
+        /* --- ПАНЕЛЬ НАЛАШТУВАНЬ --- */
         .settings-title {
             font-size: 1.6rem;
             margin: 0;
@@ -270,10 +278,80 @@
             letter-spacing: 0;
         }
 
-        .settings-section {
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            gap: 24px;
+            min-height: 480px;
+            overflow: hidden;
+        }
+
+        .settings-nav {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+        }
+
+        .settings-nav-btn {
+            background: rgba(0, 0, 0, 0.72);
+            border: 2px solid rgba(0, 255, 0, 0.76);
+            border-radius: 8px;
+            color: #f5f5f5;
+            cursor: pointer;
+            font-size: 1.08rem;
+            font-weight: 800;
+            line-height: 1.2;
+            min-height: 48px;
+            padding: 10px 14px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .settings-nav-btn:hover,
+        .settings-nav-btn.active {
+            background: rgba(0, 255, 0, 0.16);
+            border-color: #00ff00;
+            box-shadow: 0 0 16px rgba(0, 255, 0, 0.34);
+            color: #fff;
+        }
+
+        .settings-content {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(0, 240, 255, 0.34);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .settings-panel {
+            display: none;
+            grid-template-columns: repeat(2, minmax(240px, 1fr));
+            gap: 18px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 22px;
+        }
+
+        .settings-panel.active {
+            display: grid;
+        }
+
+        .settings-panel h3 {
+            color: #fff;
+            font-size: 1.25rem;
+            grid-column: 1 / -1;
+            letter-spacing: 0;
+            margin: 0 0 2px;
+        }
+
+        .settings-section {
+            background: rgba(0, 0, 0, 0.34);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 0;
+            padding: 14px;
         }
 
         .settings-section label {
@@ -282,20 +360,152 @@
             font-weight: bold;
         }
 
+        .settings-row {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .settings-value {
+            color: #00f0ff;
+            font-weight: 800;
+            min-width: 56px;
+            text-align: right;
+        }
+
+        .settings-range {
+            accent-color: #00ff00;
+            width: 100%;
+        }
+
+        .settings-select,
+        .settings-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.96rem;
+            min-width: 0;
+            outline: none;
+            padding: 10px 12px;
+            width: 100%;
+        }
+
+        .settings-select:focus,
+        .settings-input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+        }
+
+        .settings-select option {
+            background: #111;
+            color: #fff;
+        }
+
+        .settings-toggle {
+            align-items: center;
+            align-self: flex-start;
+            background: rgba(0, 0, 0, 0.64);
+            border: 2px solid rgba(0, 255, 0, 0.72);
+            border-radius: 999px;
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            font-weight: 800;
+            gap: 10px;
+            min-width: 128px;
+            padding: 8px 14px;
+            transition: all 0.2s ease;
+        }
+
+        .settings-toggle .toggle-light {
+            background: #555;
+            border-radius: 50%;
+            height: 14px;
+            width: 14px;
+        }
+
+        .settings-toggle.active {
+            background: rgba(0, 255, 0, 0.16);
+            border-color: #00ff00;
+        }
+
+        .settings-toggle.active .toggle-light {
+            background: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        .choice-grid {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .choice-grid.two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .choice-btn,
+        .keybind-btn {
+            background: rgba(0, 0, 0, 0.58);
+            border: 1px solid rgba(0, 255, 0, 0.58);
+            border-radius: 8px;
+            color: #e8e8e8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 800;
+            min-height: 40px;
+            padding: 8px 10px;
+            transition: all 0.2s ease;
+        }
+
+        .choice-btn:hover,
+        .choice-btn.active,
+        .keybind-btn:hover,
+        .keybind-btn.listening {
+            background: #00ff00;
+            border-color: #00ff00;
+            color: #000;
+        }
+
+        .keybind-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .keybind-row {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            display: grid;
+            gap: 8px;
+            grid-template-columns: minmax(90px, 1fr) 82px;
+            padding: 8px;
+        }
+
+        .keybind-row span {
+            color: #ddd;
+            font-size: 0.9rem;
+            font-weight: 700;
+            min-width: 0;
+        }
+
         .language-bar {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start;
             max-width: 100%;
         }
 
         .lang-btn {
-            background: none;
+            background: rgba(0, 0, 0, 0.48);
             border: 1px solid #00ff00;
-            border-radius: 12px;
+            border-radius: 8px;
             color: #ccc;
-            padding: 5px 15px;
+            padding: 9px 14px;
             font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -310,6 +520,41 @@
         .lang-btn.active {
             font-weight: bold;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .settings-status {
+            align-items: center;
+            color: rgba(255, 255, 255, 0.72);
+            display: flex;
+            font-size: 0.92rem;
+            font-weight: 700;
+            min-height: 42px;
+        }
+
+        .reset-btn {
+            border-color: #ff007f;
+        }
+
+        .reset-btn:hover {
+            background: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.55);
+        }
+
+        body.reduced-effects * {
+            box-shadow: none !important;
+            transition: none !important;
+        }
+
+        body.high-contrast {
+            background-image: radial-gradient(circle at center, #1b1b1b 0%, #050505 100%);
+        }
+
+        body.high-contrast #create-server-menu,
+        body.high-contrast #find-server-menu,
+        body.high-contrast #settings-menu,
+        body.high-contrast .settings-content,
+        body.high-contrast .settings-section {
+            border-color: #fff;
         }
 
         @media (max-width: 900px) {
@@ -328,6 +573,35 @@
             .search-layout {
                 grid-template-columns: 1fr;
                 flex-direction: column;
+            }
+
+            #settings-menu {
+                max-height: none;
+                overflow: visible;
+            }
+
+            .settings-layout,
+            .settings-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-layout {
+                min-height: 0;
+            }
+
+            .settings-panel {
+                max-height: none;
+            }
+
+            .settings-nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .choice-grid,
+            .choice-grid.two,
+            .keybind-grid {
+                grid-template-columns: 1fr;
             }
 
             .language-bar {
@@ -475,25 +749,270 @@
     <div id="settings-menu">
         <h2 id="settings-title" class="settings-title">Налаштування</h2>
 
-        <div class="settings-section">
-            <label id="lbl-language">Мова</label>
-            <div class="language-bar">
-                <button class="lang-btn" onclick="setLanguage('en', this)">English</button>
-                <button class="lang-btn active" onclick="setLanguage('uk', this)">Українська</button>
-                <button class="lang-btn" onclick="setLanguage('ja', this)">日本語</button>
-                <button class="lang-btn" onclick="setLanguage('es', this)">Español</button>
-                <button class="lang-btn" onclick="setLanguage('de', this)">Deutsch</button>
-                <button class="lang-btn" onclick="setLanguage('fr', this)">Français</button>
+        <div class="settings-layout">
+            <nav class="settings-nav" aria-label="Розділи налаштувань">
+                <button id="settings-tab-audio" type="button" class="settings-nav-btn active" onclick="setSettingsTab('audio')">Звук</button>
+                <button id="settings-tab-graphics" type="button" class="settings-nav-btn" onclick="setSettingsTab('graphics')">Графіка</button>
+                <button id="settings-tab-controls" type="button" class="settings-nav-btn" onclick="setSettingsTab('controls')">Керування</button>
+                <button id="settings-tab-gameplay" type="button" class="settings-nav-btn" onclick="setSettingsTab('gameplay')">Гра</button>
+                <button id="settings-tab-language" type="button" class="settings-nav-btn" onclick="setSettingsTab('language')">Мова</button>
+            </nav>
+
+            <div class="settings-content">
+                <section id="settings-panel-audio" class="settings-panel active">
+                    <h3>Звук</h3>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-master-volume">Загальна гучність</label>
+                            <span id="value-masterVolume" class="settings-value">60%</span>
+                        </div>
+                        <input id="setting-master-volume" class="settings-range" type="range" min="0" max="100" value="60" oninput="updateNumberSetting('masterVolume', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-music-volume">Музика</label>
+                            <span id="value-musicVolume" class="settings-value">50%</span>
+                        </div>
+                        <input id="setting-music-volume" class="settings-range" type="range" min="0" max="100" value="50" oninput="updateNumberSetting('musicVolume', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-effects-volume">Ефекти</label>
+                            <span id="value-effectsVolume" class="settings-value">75%</span>
+                        </div>
+                        <input id="setting-effects-volume" class="settings-range" type="range" min="0" max="100" value="75" oninput="updateNumberSetting('effectsVolume', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-voice-volume">Голос інших гравців</label>
+                            <span id="value-voiceVolume" class="settings-value">70%</span>
+                        </div>
+                        <input id="setting-voice-volume" class="settings-range" type="range" min="0" max="100" value="70" oninput="updateNumberSetting('voiceVolume', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Голосовий чат</label>
+                        <button id="toggle-voiceChat" type="button" class="settings-toggle active" onclick="toggleBooleanSetting('voiceChat')" aria-pressed="true">
+                            <span class="toggle-light"></span><span class="toggle-label">Увімкнено</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Push-to-talk</label>
+                        <button id="toggle-pushToTalk" type="button" class="settings-toggle" onclick="toggleBooleanSetting('pushToTalk')" aria-pressed="false">
+                            <span class="toggle-light"></span><span class="toggle-label">Вимкнено</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-section">
+                        <label for="setting-voice-input">Пристрій голосового вводу</label>
+                        <select id="setting-voice-input" class="settings-select" onchange="updateStringSetting('voiceInput', this.value)">
+                            <option value="default">Системний мікрофон</option>
+                            <option value="stereo-mixer">Стерео мікшер</option>
+                            <option value="disabled">Без мікрофона</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-section">
+                        <label for="setting-voice-output">Пристрій виводу</label>
+                        <select id="setting-voice-output" class="settings-select" onchange="updateStringSetting('voiceOutput', this.value)">
+                            <option value="default">Системні динаміки</option>
+                            <option value="headphones">Навушники</option>
+                            <option value="speakers">Колонки</option>
+                        </select>
+                    </div>
+                </section>
+
+                <section id="settings-panel-graphics" class="settings-panel">
+                    <h3>Графіка</h3>
+
+                    <div class="settings-section">
+                        <label>Якість графіки</label>
+                        <div class="choice-grid">
+                            <button type="button" class="choice-btn" data-setting="graphicsQuality" data-value="low" onclick="setChoiceSetting('graphicsQuality', 'low')">Низька</button>
+                            <button type="button" class="choice-btn" data-setting="graphicsQuality" data-value="medium" onclick="setChoiceSetting('graphicsQuality', 'medium')">Середня</button>
+                            <button type="button" class="choice-btn" data-setting="graphicsQuality" data-value="high" onclick="setChoiceSetting('graphicsQuality', 'high')">Висока</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <label for="setting-resolution">Роздільна здатність</label>
+                        <select id="setting-resolution" class="settings-select" onchange="updateStringSetting('resolution', this.value)">
+                            <option value="1280x720">1280 x 720</option>
+                            <option value="1600x900">1600 x 900</option>
+                            <option value="1920x1080">1920 x 1080</option>
+                            <option value="2560x1440">2560 x 1440</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Режим вікна</label>
+                        <div class="choice-grid">
+                            <button type="button" class="choice-btn" data-setting="windowMode" data-value="fullscreen" onclick="setChoiceSetting('windowMode', 'fullscreen')">Повний</button>
+                            <button type="button" class="choice-btn" data-setting="windowMode" data-value="borderless" onclick="setChoiceSetting('windowMode', 'borderless')">Без рамки</button>
+                            <button type="button" class="choice-btn" data-setting="windowMode" data-value="windowed" onclick="setChoiceSetting('windowMode', 'windowed')">Вікно</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Ліміт FPS</label>
+                        <div class="choice-grid">
+                            <button type="button" class="choice-btn" data-setting="fpsLimit" data-value="30" onclick="setChoiceSetting('fpsLimit', '30')">30</button>
+                            <button type="button" class="choice-btn" data-setting="fpsLimit" data-value="60" onclick="setChoiceSetting('fpsLimit', '60')">60</button>
+                            <button type="button" class="choice-btn" data-setting="fpsLimit" data-value="120" onclick="setChoiceSetting('fpsLimit', '120')">120</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-brightness">Яскравість</label>
+                            <span id="value-brightness" class="settings-value">50%</span>
+                        </div>
+                        <input id="setting-brightness" class="settings-range" type="range" min="0" max="100" value="50" oninput="updateNumberSetting('brightness', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-ui-scale">Масштаб інтерфейсу</label>
+                            <span id="value-uiScale" class="settings-value">100%</span>
+                        </div>
+                        <input id="setting-ui-scale" class="settings-range" type="range" min="80" max="120" value="100" oninput="updateNumberSetting('uiScale', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-panel-opacity">Прозорість меню</label>
+                            <span id="value-panelOpacity" class="settings-value">70%</span>
+                        </div>
+                        <input id="setting-panel-opacity" class="settings-range" type="range" min="45" max="95" value="70" oninput="updateNumberSetting('panelOpacity', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Менше анімацій</label>
+                        <button id="toggle-reducedMotion" type="button" class="settings-toggle" onclick="toggleBooleanSetting('reducedMotion')" aria-pressed="false">
+                            <span class="toggle-light"></span><span class="toggle-label">Вимкнено</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Високий контраст</label>
+                        <button id="toggle-highContrast" type="button" class="settings-toggle" onclick="toggleBooleanSetting('highContrast')" aria-pressed="false">
+                            <span class="toggle-light"></span><span class="toggle-label">Вимкнено</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section id="settings-panel-controls" class="settings-panel">
+                    <h3>Керування</h3>
+
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <label for="setting-mouse-sensitivity">Чутливість миші</label>
+                            <span id="value-mouseSensitivity" class="settings-value">50%</span>
+                        </div>
+                        <input id="setting-mouse-sensitivity" class="settings-range" type="range" min="1" max="100" value="50" oninput="updateNumberSetting('mouseSensitivity', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Інверсія миші</label>
+                        <button id="toggle-invertMouse" type="button" class="settings-toggle" onclick="toggleBooleanSetting('invertMouse')" aria-pressed="false">
+                            <span class="toggle-light"></span><span class="toggle-label">Вимкнено</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-section" style="grid-column: 1 / -1;">
+                        <label>Клавіші</label>
+                        <div class="keybind-grid">
+                            <div class="keybind-row"><span>Вперед</span><button id="key-forward" type="button" class="keybind-btn" onclick="startKeyCapture('forward')">W</button></div>
+                            <div class="keybind-row"><span>Назад</span><button id="key-backward" type="button" class="keybind-btn" onclick="startKeyCapture('backward')">S</button></div>
+                            <div class="keybind-row"><span>Ліворуч</span><button id="key-left" type="button" class="keybind-btn" onclick="startKeyCapture('left')">A</button></div>
+                            <div class="keybind-row"><span>Праворуч</span><button id="key-right" type="button" class="keybind-btn" onclick="startKeyCapture('right')">D</button></div>
+                            <div class="keybind-row"><span>Стрибок</span><button id="key-jump" type="button" class="keybind-btn" onclick="startKeyCapture('jump')">Space</button></div>
+                            <div class="keybind-row"><span>Присісти</span><button id="key-crouch" type="button" class="keybind-btn" onclick="startKeyCapture('crouch')">Ctrl</button></div>
+                            <div class="keybind-row"><span>Дія</span><button id="key-interact" type="button" class="keybind-btn" onclick="startKeyCapture('interact')">E</button></div>
+                            <div class="keybind-row"><span>Голос</span><button id="key-voice" type="button" class="keybind-btn" onclick="startKeyCapture('voice')">V</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="settings-panel-gameplay" class="settings-panel">
+                    <h3>Гра</h3>
+
+                    <div class="settings-section">
+                        <label for="setting-player-name">Ім'я гравця за замовчуванням</label>
+                        <input id="setting-player-name" class="settings-input" type="text" maxlength="30" value="SKUNS1K" oninput="updateStringSetting('playerName', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Тип сервера за замовчуванням</label>
+                        <div class="choice-grid two">
+                            <button type="button" class="choice-btn" data-setting="defaultServerType" data-value="public" onclick="setChoiceSetting('defaultServerType', 'public')">Публічний</button>
+                            <button type="button" class="choice-btn" data-setting="defaultServerType" data-value="private" onclick="setChoiceSetting('defaultServerType', 'private')">Приватний</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <label for="setting-default-region">Регіон за замовчуванням</label>
+                        <select id="setting-default-region" class="settings-select" onchange="updateStringSetting('defaultRegion', this.value)">
+                            <option value="europe">Європа</option>
+                            <option value="asia">Азія</option>
+                            <option value="north-america">Північна Америка</option>
+                            <option value="south-america">Південна Америка</option>
+                            <option value="not-set">Не вказано</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-section">
+                        <label for="setting-default-players">Гравців за замовчуванням</label>
+                        <input id="setting-default-players" class="settings-input" type="number" min="1" max="24" value="10" onchange="updateNumberSetting('defaultMaxPlayers', this.value)">
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Підказки в меню</label>
+                        <button id="toggle-showHints" type="button" class="settings-toggle active" onclick="toggleBooleanSetting('showHints')" aria-pressed="true">
+                            <span class="toggle-light"></span><span class="toggle-label">Увімкнено</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-section">
+                        <label>Автоматична готовність</label>
+                        <button id="toggle-autoReady" type="button" class="settings-toggle" onclick="toggleBooleanSetting('autoReady')" aria-pressed="false">
+                            <span class="toggle-light"></span><span class="toggle-label">Вимкнено</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section id="settings-panel-language" class="settings-panel">
+                    <h3>Мова</h3>
+
+                    <div class="settings-section" style="grid-column: 1 / -1;">
+                        <label id="lbl-language">Мова інтерфейсу</label>
+                        <div class="language-bar">
+                            <button class="lang-btn" data-lang="en" onclick="setLanguage('en', this)">English</button>
+                            <button class="lang-btn active" data-lang="uk" onclick="setLanguage('uk', this)">Українська</button>
+                            <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja', this)">日本語</button>
+                            <button class="lang-btn" data-lang="es" onclick="setLanguage('es', this)">Español</button>
+                            <button class="lang-btn" data-lang="de" onclick="setLanguage('de', this)">Deutsch</button>
+                            <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr', this)">Français</button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
 
         <div class="form-actions">
+            <button id="btn-reset-settings" class="action-btn reset-btn" onclick="resetSettings()">Скинути</button>
+            <div id="settings-status" class="settings-status">Налаштування збережено</div>
             <button id="btn-settings-back" class="action-btn" onclick="closeSettingsMenu()">Назад</button>
         </div>
     </div>
 
     <script>
-        // Словник з перекладами для всіх меню
+        // Словник з перекладами для обох меню
         const translations = {
             'uk': {
                 create: "Створити сервер", find: "Знайти сервер", settings: "Налаштування", exit: "Вийти з гри",
@@ -563,58 +1082,445 @@
             }
         };
 
-        let currentLanguage = 'uk';
-        let findServerType = 'public';
+        const SETTINGS_STORAGE_KEY = 'chameleons-vs-hunters-settings';
+        const defaultSettings = {
+            language: 'uk',
+            activeSettingsTab: 'audio',
+            masterVolume: 60,
+            musicVolume: 50,
+            effectsVolume: 75,
+            voiceVolume: 70,
+            voiceChat: true,
+            pushToTalk: false,
+            voiceInput: 'default',
+            voiceOutput: 'default',
+            graphicsQuality: 'medium',
+            resolution: '1920x1080',
+            windowMode: 'fullscreen',
+            fpsLimit: '60',
+            brightness: 50,
+            uiScale: 100,
+            panelOpacity: 70,
+            reducedMotion: false,
+            highContrast: false,
+            mouseSensitivity: 50,
+            invertMouse: false,
+            playerName: 'SKUNS1K',
+            defaultServerType: 'public',
+            defaultRegion: 'europe',
+            defaultMaxPlayers: 10,
+            showHints: true,
+            autoReady: false,
+            keybinds: {
+                forward: 'W',
+                backward: 'S',
+                left: 'A',
+                right: 'D',
+                jump: 'Space',
+                crouch: 'Ctrl',
+                interact: 'E',
+                voice: 'V'
+            }
+        };
+
+        let appSettings = loadStoredSettings();
+        let currentLanguage = appSettings.language;
+        let findServerType = appSettings.defaultServerType;
+        let pendingKeybindAction = null;
+        let settingsStatusTimer = null;
+
+        function cloneDefaultSettings() {
+            return {
+                ...defaultSettings,
+                keybinds: { ...defaultSettings.keybinds }
+            };
+        }
+
+        function mergeSettings(savedSettings) {
+            const base = cloneDefaultSettings();
+            return {
+                ...base,
+                ...savedSettings,
+                keybinds: {
+                    ...base.keybinds,
+                    ...(savedSettings.keybinds || {})
+                }
+            };
+        }
+
+        function loadStoredSettings() {
+            try {
+                const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+                return storedSettings ? mergeSettings(JSON.parse(storedSettings)) : cloneDefaultSettings();
+            } catch (error) {
+                return cloneDefaultSettings();
+            }
+        }
+
+        function saveSettings(showStatus = true) {
+            try {
+                localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(appSettings));
+                if (showStatus) {
+                    showSettingsStatus('Налаштування збережено');
+                }
+            } catch (error) {
+                showSettingsStatus('Не вдалося зберегти налаштування');
+            }
+        }
+
+        function showSettingsStatus(message) {
+            const statusElement = document.getElementById('settings-status');
+            if (!statusElement) return;
+
+            statusElement.innerText = message;
+            clearTimeout(settingsStatusTimer);
+            settingsStatusTimer = setTimeout(() => {
+                statusElement.innerText = 'Налаштування збережено';
+            }, 1400);
+        }
+
+        function setText(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerText = value;
+            }
+        }
+
+        function setPlaceholder(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.placeholder = value;
+            }
+        }
 
         // Функція зміни мови
         function setLanguage(langCode, clickedButton) {
-            currentLanguage = langCode;
+            const texts = translations[langCode] || translations.uk;
+            currentLanguage = translations[langCode] ? langCode : 'uk';
+            appSettings.language = currentLanguage;
 
             // Головне меню
-            document.getElementById('btn-create').innerText = translations[langCode].create;
-            document.getElementById('btn-find').innerText = translations[langCode].find;
-            document.getElementById('btn-settings').innerText = translations[langCode].settings;
-            document.getElementById('btn-exit').innerText = translations[langCode].exit;
+            setText('btn-create', texts.create);
+            setText('btn-find', texts.find);
+            setText('btn-settings', texts.settings);
+            setText('btn-exit', texts.exit);
 
             // Меню створення сервера
-            document.getElementById('lbl-player-name').innerText = translations[langCode].playerName;
-            document.getElementById('lbl-server-name').innerText = translations[langCode].serverName;
-            document.getElementById('lbl-password').innerText = translations[langCode].password;
-            document.getElementById('lbl-max-players').innerText = translations[langCode].maxPlayers;
-            document.getElementById('lbl-region-tag').innerText = translations[langCode].regionTag;
-            document.getElementById('lbl-server-tag').innerText = translations[langCode].serverTag;
-
-            document.getElementById('input-server-name').placeholder = translations[langCode].placeholderText;
-            document.getElementById('input-password').placeholder = translations[langCode].placeholderText;
-
-            document.getElementById('btn-back').innerText = translations[langCode].back;
-            document.getElementById('btn-confirm-create').innerText = translations[langCode].confirmCreate;
+            setText('lbl-player-name', texts.playerName);
+            setText('lbl-server-name', texts.serverName);
+            setText('lbl-password', texts.password);
+            setText('lbl-max-players', texts.maxPlayers);
+            setText('lbl-region-tag', texts.regionTag);
+            setText('lbl-server-tag', texts.serverTag);
+            setPlaceholder('input-server-name', texts.placeholderText);
+            setPlaceholder('input-password', texts.placeholderText);
+            setText('btn-back', texts.back);
+            setText('btn-confirm-create', texts.confirmCreate);
 
             // Меню пошуку сервера
-            document.getElementById('lbl-find-player-name').innerText = translations[langCode].playerName;
-            document.getElementById('lbl-find-server-name').innerText = translations[langCode].serverName;
-            document.getElementById('lbl-find-password').innerText = translations[langCode].password;
-            document.getElementById('lbl-find-region-tag').innerText = translations[langCode].regionTag;
-            document.getElementById('lbl-find-server-tag').innerText = translations[langCode].serverTag;
-            document.getElementById('lbl-server-type').innerText = translations[langCode].serverType;
-            document.getElementById('btn-private-server').innerText = translations[langCode].privateServer;
-            document.getElementById('btn-public-server').innerText = translations[langCode].publicServer;
-            document.getElementById('lbl-search-results').innerText = translations[langCode].searchResults;
-            document.getElementById('empty-results').innerText = translations[langCode].noResults;
-            document.getElementById('input-find-server-name').placeholder = translations[langCode].placeholderText;
-            document.getElementById('input-find-password').placeholder = translations[langCode].placeholderText;
-            document.getElementById('btn-find-back').innerText = translations[langCode].back;
+            setText('lbl-find-player-name', texts.playerName);
+            setText('lbl-find-server-name', texts.serverName);
+            setText('lbl-find-password', texts.password);
+            setText('lbl-find-region-tag', texts.regionTag);
+            setText('lbl-find-server-tag', texts.serverTag);
+            setText('lbl-server-type', texts.serverType);
+            setText('btn-private-server', texts.privateServer);
+            setText('btn-public-server', texts.publicServer);
+            setText('lbl-search-results', texts.searchResults);
+            setText('empty-results', texts.noResults);
+            setPlaceholder('input-find-server-name', texts.placeholderText);
+            setPlaceholder('input-find-password', texts.placeholderText);
+            setText('btn-find-back', texts.back);
             updateFindServerMode();
 
             // Меню налаштувань
-            document.getElementById('settings-title').innerText = translations[langCode].settings;
-            document.getElementById('lbl-language').innerText = translations[langCode].language;
-            document.getElementById('btn-settings-back').innerText = translations[langCode].back;
+            setText('settings-title', texts.settings);
+            setText('lbl-language', texts.language);
+            setText('btn-settings-back', texts.back);
 
-            // Оновлення активної кнопки мови
             const langButtons = document.querySelectorAll('.lang-btn');
-            langButtons.forEach(btn => btn.classList.remove('active'));
-            clickedButton.classList.add('active');
+            langButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
+            });
+
+            if (clickedButton) {
+                saveSettings();
+            }
+        }
+
+        function setSettingsTab(tabName) {
+            appSettings.activeSettingsTab = tabName;
+
+            document.querySelectorAll('.settings-nav-btn').forEach(button => {
+                button.classList.toggle('active', button.id === `settings-tab-${tabName}`);
+            });
+
+            document.querySelectorAll('.settings-panel').forEach(panel => {
+                panel.classList.toggle('active', panel.id === `settings-panel-${tabName}`);
+            });
+
+            saveSettings(false);
+        }
+
+        function setRangeValue(inputId, valueId, value, suffix = '%') {
+            const input = document.getElementById(inputId);
+            const valueElement = document.getElementById(valueId);
+
+            if (input) input.value = value;
+            if (valueElement) valueElement.innerText = `${value}${suffix}`;
+        }
+
+        function setSelectValue(selectId, value) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+
+            const hasValue = Array.from(select.options).some(option => option.value === value);
+            select.value = hasValue ? value : 'default';
+        }
+
+        function setInputValue(inputId, value) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = value;
+            }
+        }
+
+        function renderToggle(settingKey) {
+            const button = document.getElementById(`toggle-${settingKey}`);
+            if (!button) return;
+
+            const isActive = Boolean(appSettings[settingKey]);
+            const label = button.querySelector('.toggle-label');
+            button.classList.toggle('active', isActive);
+            button.setAttribute('aria-pressed', isActive);
+            if (label) {
+                label.innerText = isActive ? 'Увімкнено' : 'Вимкнено';
+            }
+        }
+
+        function renderChoiceButtons(settingKey) {
+            document.querySelectorAll(`.choice-btn[data-setting="${settingKey}"]`).forEach(button => {
+                button.classList.toggle('active', button.dataset.value === String(appSettings[settingKey]));
+            });
+        }
+
+        function renderKeybinds() {
+            Object.keys(appSettings.keybinds).forEach(action => {
+                const button = document.getElementById(`key-${action}`);
+                if (button) {
+                    button.innerText = appSettings.keybinds[action];
+                    button.classList.toggle('listening', pendingKeybindAction === action);
+                }
+            });
+        }
+
+        function renderSettings() {
+            setRangeValue('setting-master-volume', 'value-masterVolume', appSettings.masterVolume);
+            setRangeValue('setting-music-volume', 'value-musicVolume', appSettings.musicVolume);
+            setRangeValue('setting-effects-volume', 'value-effectsVolume', appSettings.effectsVolume);
+            setRangeValue('setting-voice-volume', 'value-voiceVolume', appSettings.voiceVolume);
+            setRangeValue('setting-brightness', 'value-brightness', appSettings.brightness);
+            setRangeValue('setting-ui-scale', 'value-uiScale', appSettings.uiScale);
+            setRangeValue('setting-panel-opacity', 'value-panelOpacity', appSettings.panelOpacity);
+            setRangeValue('setting-mouse-sensitivity', 'value-mouseSensitivity', appSettings.mouseSensitivity);
+
+            setSelectValue('setting-voice-input', appSettings.voiceInput);
+            setSelectValue('setting-voice-output', appSettings.voiceOutput);
+            setSelectValue('setting-resolution', appSettings.resolution);
+            setSelectValue('setting-default-region', appSettings.defaultRegion);
+            setInputValue('setting-player-name', appSettings.playerName);
+            setInputValue('setting-default-players', appSettings.defaultMaxPlayers);
+
+            [
+                'voiceChat',
+                'pushToTalk',
+                'reducedMotion',
+                'highContrast',
+                'invertMouse',
+                'showHints',
+                'autoReady'
+            ].forEach(renderToggle);
+
+            [
+                'graphicsQuality',
+                'windowMode',
+                'fpsLimit',
+                'defaultServerType'
+            ].forEach(renderChoiceButtons);
+
+            renderKeybinds();
+            setSettingsTab(appSettings.activeSettingsTab || 'audio');
+        }
+
+        function applySettingsToPage() {
+            const uiScale = Math.max(80, Math.min(120, Number(appSettings.uiScale))) / 100;
+            const panelOpacity = Math.max(45, Math.min(95, Number(appSettings.panelOpacity))) / 100;
+            const brightness = 0.75 + (Math.max(0, Math.min(100, Number(appSettings.brightness))) / 100) * 0.5;
+
+            document.documentElement.style.fontSize = `${16 * uiScale}px`;
+            document.documentElement.style.setProperty('--panel-alpha', panelOpacity);
+            document.body.classList.toggle('reduced-effects', appSettings.reducedMotion || appSettings.graphicsQuality === 'low');
+            document.body.classList.toggle('high-contrast', appSettings.highContrast);
+            document.body.dataset.quality = appSettings.graphicsQuality;
+            document.body.style.filter = `brightness(${brightness})`;
+
+            const playerNameInputs = [
+                document.getElementById('input-player-name'),
+                document.getElementById('input-find-player-name')
+            ];
+
+            playerNameInputs.forEach(input => {
+                if (input && !input.value) {
+                    input.value = appSettings.playerName;
+                }
+            });
+
+            const maxPlayersInput = document.getElementById('input-max-players');
+            if (maxPlayersInput && !maxPlayersInput.dataset.touched) {
+                maxPlayersInput.value = appSettings.defaultMaxPlayers;
+            }
+        }
+
+        function updateNumberSetting(settingKey, value) {
+            let numberValue = Number(value);
+
+            if (settingKey === 'defaultMaxPlayers') {
+                numberValue = Math.max(1, Math.min(24, numberValue || defaultSettings.defaultMaxPlayers));
+            }
+
+            appSettings[settingKey] = numberValue;
+            renderSettings();
+            applySettingsToPage();
+            saveSettings();
+        }
+
+        function updateStringSetting(settingKey, value) {
+            appSettings[settingKey] = value;
+
+            if (settingKey === 'playerName') {
+                const playerNameInputs = [
+                    document.getElementById('input-player-name'),
+                    document.getElementById('input-find-player-name')
+                ];
+
+                playerNameInputs.forEach(input => {
+                    if (input) input.value = value;
+                });
+            }
+
+            applySettingsToPage();
+            saveSettings();
+        }
+
+        function setChoiceSetting(settingKey, value) {
+            appSettings[settingKey] = value;
+
+            if (settingKey === 'defaultServerType') {
+                findServerType = value;
+                updateFindServerMode();
+            }
+
+            renderSettings();
+            applySettingsToPage();
+            saveSettings();
+        }
+
+        function toggleBooleanSetting(settingKey) {
+            appSettings[settingKey] = !appSettings[settingKey];
+            renderSettings();
+            applySettingsToPage();
+            saveSettings();
+        }
+
+        function resetSettings() {
+            appSettings = cloneDefaultSettings();
+            currentLanguage = appSettings.language;
+            findServerType = appSettings.defaultServerType;
+            pendingKeybindAction = null;
+            setLanguage(currentLanguage);
+            renderSettings();
+            applySettingsToPage();
+            updateFindServerMode();
+            saveSettings(false);
+            showSettingsStatus('Налаштування скинуто');
+        }
+
+        function startKeyCapture(action) {
+            pendingKeybindAction = action;
+            renderKeybinds();
+
+            const button = document.getElementById(`key-${action}`);
+            if (button) {
+                button.innerText = '...';
+                button.classList.add('listening');
+            }
+        }
+
+        function formatKeyName(event) {
+            const keyNames = {
+                ' ': 'Space',
+                Control: 'Ctrl',
+                ArrowUp: 'Up',
+                ArrowDown: 'Down',
+                ArrowLeft: 'Left',
+                ArrowRight: 'Right'
+            };
+
+            if (keyNames[event.key]) {
+                return keyNames[event.key];
+            }
+
+            return event.key.length === 1 ? event.key.toUpperCase() : event.key;
+        }
+
+        document.addEventListener('keydown', event => {
+            if (!pendingKeybindAction) return;
+
+            event.preventDefault();
+
+            if (event.key === 'Escape') {
+                pendingKeybindAction = null;
+                renderKeybinds();
+                return;
+            }
+
+            appSettings.keybinds[pendingKeybindAction] = formatKeyName(event);
+            pendingKeybindAction = null;
+            renderKeybinds();
+            saveSettings();
+        });
+
+        async function loadAudioDevices() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                fillDeviceSelect('setting-voice-input', 'voiceInput', devices, 'audioinput', 'Системний мікрофон');
+                fillDeviceSelect('setting-voice-output', 'voiceOutput', devices, 'audiooutput', 'Системні динаміки');
+            } catch (error) {
+                // Браузер може не віддати список пристроїв без дозволу.
+            }
+        }
+
+        function fillDeviceSelect(selectId, settingKey, devices, kind, defaultLabel) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+
+            const filteredDevices = devices.filter(device => device.kind === kind && device.deviceId);
+            if (!filteredDevices.length) return;
+
+            const currentValue = appSettings[settingKey];
+            select.innerHTML = `<option value="default">${defaultLabel}</option>`;
+
+            filteredDevices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.innerText = device.label || `${defaultLabel} ${index + 1}`;
+                select.appendChild(option);
+            });
+
+            const hasCurrentValue = Array.from(select.options).some(option => option.value === currentValue);
+            select.value = hasCurrentValue ? currentValue : 'default';
         }
 
         // Відкрити меню створення сервера
@@ -652,6 +1558,8 @@
             document.getElementById('create-server-menu').style.display = 'none';
             document.getElementById('find-server-menu').style.display = 'none';
             document.getElementById('settings-menu').style.display = 'flex';
+            renderSettings();
+            applySettingsToPage();
         }
 
         // Повернутися до головного меню з налаштувань
@@ -667,7 +1575,7 @@
 
         function updateFindServerMode() {
             const isPrivate = findServerType === 'private';
-            const texts = translations[currentLanguage];
+            const texts = translations[currentLanguage] || translations.uk;
             const privateButton = document.getElementById('btn-private-server');
             const publicButton = document.getElementById('btn-public-server');
 
@@ -690,6 +1598,24 @@
             // Робимо активною ту, на яку натиснули
             button.classList.add('active');
         }
+
+        function initializeSettings() {
+            const maxPlayersInput = document.getElementById('input-max-players');
+            if (maxPlayersInput) {
+                maxPlayersInput.addEventListener('input', () => {
+                    maxPlayersInput.dataset.touched = 'true';
+                });
+            }
+
+            setLanguage(appSettings.language);
+            renderSettings();
+            applySettingsToPage();
+            updateFindServerMode();
+            loadAudioDevices();
+        }
+
+        initializeSettings();
     </script>
+
 </body>
 </html>
